@@ -1,9 +1,70 @@
 <!DOCTYPE html>
-<html>
+<html lang="tr">
 <head>
+  <meta charset="UTF-8">
   <title>Nocta Sohbet</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #0f0f0f;
+      color: #fff;
+      padding: 20px;
+    }
+    .chat-box {
+      background: #1e1e1e;
+      padding: 20px;
+      border-radius: 10px;
+      max-width: 600px;
+      margin: auto;
+    }
+    .message {
+      margin-bottom: 10px;
+    }
+    .user { color: #00e1ff; }
+    .bot { color: #fbb03b; }
+    input[type="text"] {
+      width: 80%;
+      padding: 10px;
+      margin-top: 10px;
+      border: none;
+      border-radius: 5px;
+    }
+    button {
+      padding: 10px;
+      border: none;
+      background: #fbb03b;
+      color: #000;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+  </style>
 </head>
 <body>
-  <h1>Sohbet sayfası yüklendi!</h1>
+  <div class="chat-box">
+    <div id="chat"></div>
+    <input type="text" id="message" placeholder="Bir şey yaz..." />
+    <button onclick="sendMessage()">Gönder</button>
+  </div>
+
+  <script>
+    async function sendMessage() {
+      const input = document.getElementById('message');
+      const chat = document.getElementById('chat');
+      const message = input.value.trim();
+      if (!message) return;
+
+      chat.innerHTML += `<div class="message user"><strong>Sen:</strong> ${message}</div>`;
+      input.value = '';
+
+      const response = await fetch('/chat', {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify({ message: message, role: "samimi" })
+      });
+      const data = await response.json();
+
+      chat.innerHTML += `<div class="message bot"><strong>Bot:</strong> ${data.reply}</div>`;
+    }
+  </script>
 </body>
 </html>
