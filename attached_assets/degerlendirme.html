@@ -1,0 +1,91 @@
+﻿<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8">
+  <title>Gece Günlüğü</title>
+  <style>
+    body {
+      margin: 0;
+      padding: 40px 20px;
+      background: linear-gradient(to top, #1a000b, #000000);
+      color: #ffbbbb;
+      font-family: sans-serif;
+      text-align: center;
+    }
+
+    h2 {
+      border: 2px solid #ff3b3b;
+      padding: 10px 20px;
+      border-radius: 14px;
+      display: inline-block;
+      font-size: 20px;
+      color: #ff3b3b;
+    }
+
+    .box {
+      border: 1px solid #ff4444;
+      border-radius: 12px;
+      padding: 20px;
+      margin: 30px auto;
+      max-width: 300px;
+      font-size: 16px;
+      line-height: 1.6;
+      color: #ff9999;
+    }
+
+    .stars {
+      font-size: 40px;
+      color: #ff6666;
+      margin-top: 30px;
+    }
+
+    .star {
+      cursor: pointer;
+      transition: transform 0.2s;
+    }
+
+    .star:hover {
+      transform: scale(1.2);
+    }
+
+    .filled {
+      color: #ff0000;
+    }
+  </style>
+</head>
+<body>
+
+  <h2>GECE GÜNLÜĞÜ</h2>
+
+  <div class="box">
+    NOCTA ile akşam sakin bir buluşma gerçekleştirdik.  
+    Onun derin sohbetleri gerçekten huzur veriyor.
+  </div>
+
+  <p>Başka bir geceyi dört gözle bekliyorum.</p>
+
+  <div class="stars" id="stars">
+    <span class="star" onclick="puanVer(1)">☆</span>
+    <span class="star" onclick="puanVer(2)">☆</span>
+    <span class="star" onclick="puanVer(3)">☆</span>
+    <span class="star" onclick="puanVer(4)">☆</span>
+    <span class="star" onclick="puanVer(5)">☆</span>
+  </div>
+
+  <script>
+    function puanVer(puan) {
+      const stars = document.querySelectorAll('.star');
+      stars.forEach((star, i) => {
+        star.textContent = i < puan ? '★' : '☆';
+        star.classList.toggle('filled', i < puan);
+      });
+
+      setTimeout(() => {
+        alert("Geri bildirimin için teşekkürler! Uygulama kapatılıyor...");
+        window.close(); // mobilde işe yaramazsa başka yönlendirme yapılabilir
+      }, 1000);
+    }
+  </script>
+
+</body>
+</html>

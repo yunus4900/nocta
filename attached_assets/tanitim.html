@@ -1,0 +1,127 @@
+﻿<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8">
+  <title>Kendini Tanıt</title>
+  <style>
+    body {
+      background: linear-gradient(to top, #1a000f, #000000);
+      color: #f2f2f2;
+      font-family: sans-serif;
+      margin: 0;
+      padding: 30px;
+    }
+
+    h2 {
+      font-size: 28px;
+      margin-bottom: 20px;
+    }
+
+    input, .options button {
+      width: 100%;
+      padding: 12px;
+      margin: 10px 0;
+      border-radius: 12px;
+      border: none;
+      font-size: 16px;
+    }
+
+    input {
+      background: rgba(255, 255, 255, 0.05);
+      color: white;
+    }
+
+    .options {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+      margin: 20px 0;
+    }
+
+    .options button {
+      background: #320000;
+      color: white;
+      border: 2px solid #8f0000;
+      cursor: pointer;
+      opacity: 0.8;
+    }
+
+    .options button.active {
+      background-color: #ff0033;
+      opacity: 1;
+    }
+
+    .note {
+      font-size: 12px;
+      opacity: 0.6;
+      margin-top: 10px;
+    }
+
+    .continue-btn {
+      width: 100%;
+      padding: 14px;
+      font-size: 18px;
+      background-color: #ff0022;
+      color: white;
+      border: none;
+      border-radius: 14px;
+      margin-top: 30px;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+
+  <h2>Seni tanımamıza<br> biraz izin ver...</h2>
+
+  <input type="text" id="isim" placeholder="İsim">
+  <input type="number" id="yas" placeholder="Yaş">
+  <input type="text" id="sehir" placeholder="Şehir">
+
+  <h3>Ne Arıyorsun?</h3>
+  <div class="options">
+    <button onclick="selectOption(this, 'tutku')">🔥 Tek Gecelik Tutku</button>
+    <button onclick="selectOption(this, 'eglence')">🎈 Eğlenceli Tanışma</button>
+    <button onclick="selectOption(this, 'samimi')">🤝 Samimi Arkadaşlık</button>
+    <button onclick="selectOption(this, 'gizemli')">💋 Gizli Kaçamak</button>
+  </div>
+
+  <h4>Profil Fotoğrafı Yükle</h4>
+  <div class="note">
+    ⭐ Fotoğraf yüklemek istemiyorsan, yapay zeka sana yardımcı olabilir
+  </div>
+
+  <button class="continue-btn" onclick="devamEt()">Devam Et ve Karakterini Seç</button>
+  <p class="note">Verilerin tamamen gizlidir.</p>
+
+  <script>
+    let secilenRol = null;
+
+    function selectOption(button, rol) {
+      document.querySelectorAll('.options button').forEach(btn => btn.classList.remove('active'));
+      button.classList.add('active');
+      secilenRol = rol; // örn: "samimi", "tutku" vs
+    }
+
+    function devamEt() {
+      const isim = document.getElementById("isim").value.trim();
+      const yas = document.getElementById("yas").value.trim();
+      const sehir = document.getElementById("sehir").value.trim();
+
+      if (!isim || !yas || !sehir || !secilenRol) {
+        alert("Lütfen tüm alanları doldur ve bir seçenek seç.");
+        return;
+      }
+
+      // Kullanıcı verilerini sakla
+      localStorage.setItem("isim", isim);
+      localStorage.setItem("yas", yas);
+      localStorage.setItem("sehir", sehir);
+      localStorage.setItem("karsilamaRolu", secilenRol);
+
+      window.location.href = "karakter.html";
+    }
+  </script>
+
+</body>
+</html>
