@@ -4,7 +4,12 @@ import os
 
 app = Flask(__name__)
 
-HUGGINGFACE_API_KEY = os.getenv("HF_API_KEY")
+HUGGING_FACE_API_URL = "https://api-inference.huggingface.co/models/microsoft/DialoGPT-medium"
+HUGGING_FACE_API_KEY = os.getenv("HF_API_KEY")
+
+headers = {
+    "Authorization": f"Bearer {HUGGING_FACE_API_KEY}"
+}
 
 @app.route("/")
 def home():
@@ -13,28 +18,23 @@ def home():
 @app.route("/chat", methods=["POST"])
 def chat():
     data = request.get_json()
-    user_message = data.get("message", "")
-
-    headers = {
-        "Authorization": f"Bearer {HUGGINGFACE_API_KEY}"
-    }
+    user_input = data.get("message", "")
 
     payload = {
-        "inputs": user_message
+        "inputs": user_input
     }
 
     response = requests.post(
-        "https://api-inference.huggingface.co/models/microsoft/DialoGPT-medium",
+        HUGGING_FACE_API_URL,
         headers=headers,
         json=payload
     )
 
     try:
-        generated_text = response.json()[0]['generated_text']
-        return jsonify({"reply": generated_text})
+        bot_reply = response.json()[0]["generated_text"]
+        return jsonify({"reply": bot_reply})
     except Exception as e:
         return jsonify({"reply": f"HATA: {str(e)}"})
 
 if __name__ == "__main__":
-    port = int(os.environ.get("PORT", 5000))
-    app.run(host="0.0.0.0", port=port)
+    app.run(host="0.0.0.0", port=5000)
