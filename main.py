@@ -4,7 +4,11 @@ import os
 
 app = Flask(__name__)
 
-client = openai.OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
+# OpenRouter entegrasyonu için endpoint ve key
+client = openai.OpenAI(
+    base_url="https://openrouter.ai/api/v1",
+    api_key=os.getenv("OPENROUTER_API_KEY")
+)
 
 @app.route("/")
 def home():
@@ -25,7 +29,7 @@ def chat():
 
     try:
         response = client.chat.completions.create(
-            model="gpt-3.5-turbo",
+            model="openai/gpt-3.5-turbo",
             messages=[
                 {"role": "system", "content": system_prompts.get(role, "")},
                 {"role": "user", "content": message}
@@ -34,7 +38,7 @@ def chat():
         reply = response.choices[0].message.content
         return jsonify({"reply": reply})
     except Exception as e:
-        print("OpenAI HATASI:", e)
+        print("OpenRouter HATASI:", e)
         return jsonify({"reply": f"HATA: {str(e)}"})
 
 if __name__ == "__main__":
