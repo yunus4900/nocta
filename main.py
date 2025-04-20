@@ -1,14 +1,10 @@
 from flask import Flask, render_template, request, jsonify
-from openai import OpenAI
+import requests
 import os
 
 app = Flask(__name__)
 
-# OpenRouter GPT entegrasyonu – dikkat: api_key olarak OPENAI_API_KEY alınır
-client = OpenAI(
-    base_url="https://openrouter.ai/api/v1",
-    api_key=os.getenv("OPENAI_API_KEY")
-)
+HUGGINGFACE_API_KEY = os.getenv("HF_API_KEY")
 
 @app.route("/")
 def home():
@@ -17,28 +13,26 @@ def home():
 @app.route("/chat", methods=["POST"])
 def chat():
     data = request.get_json()
-    message = data.get("message", "")
-    role = data.get("role", "samimi")
+    user_message = data.get("message", "")
 
-    system_prompts = {
-        "tutku": "You are a seductive, bold AI partner. Speak openly about desire.",
-        "eglence": "You are playful and humorous. Keep the chat light.",
-        "samimi": "You are caring and sincere. Focus on feelings.",
-        "gizemli": "You are mysterious and poetic. Speak with intrigue."
+    headers = {
+        "Authorization": f"Bearer {HUGGINGFACE_API_KEY}"
     }
 
+    payload = {
+        "inputs": user_message
+    }
+
+    response = requests.post(
+        "https://api-inference.huggingface.co/models/microsoft/DialoGPT-medium",
+        headers=headers,
+        json=payload
+    )
+
     try:
-        response = client.chat.completions.create(
-            model="openai/gpt-3.5-turbo",
-            messages=[
-                {"role": "system", "content": system_prompts.get(role, "")},
-                {"role": "user", "content": message}
-            ]
-        )
-        reply = response.choices[0].message.content
-        return jsonify({"reply": reply})
+        generated_text = response.json()[0]['generated_text']
+        return jsonify({"reply": generated_text})
     except Exception as e:
-        print("HATA:", e)
         return jsonify({"reply": f"HATA: {str(e)}"})
 
 if __name__ == "__main__":
