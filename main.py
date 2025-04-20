@@ -24,17 +24,25 @@ def chat():
         "inputs": user_input
     }
 
-    response = requests.post(
-        HUGGING_FACE_API_URL,
-        headers=headers,
-        json=payload
-    )
-
     try:
-        bot_reply = response.json()[0]["generated_text"]
-        return jsonify({"reply": bot_reply})
+        response = requests.post(
+            HUGGING_FACE_API_URL,
+            headers=headers,
+            json=payload,
+            timeout=30
+        )
+        json_data = response.json()
+
+        if isinstance(json_data, list) and "generated_text" in json_data[0]:
+            reply = json_data[0]["generated_text"]
+        else:
+            reply = "Bot şu an cevap veremiyor, lütfen daha sonra tekrar dene."
+
     except Exception as e:
-        return jsonify({"reply": f"HATA: {str(e)}"})
+        reply = f"HATA: {str(e)}"
+
+    return jsonify({"reply": reply})
 
 if __name__ == "__main__":
-    app.run(host="0.0.0.0", port=5000)
+    port = int(os.environ.get("PORT", 5000))
+    app.run(host="0.0.0.0", port=port)
