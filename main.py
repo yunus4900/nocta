@@ -3,7 +3,8 @@ import openai
 import os
 
 app = Flask(__name__)
-openai.api_key = os.getenv("OPENAI_API_KEY")
+
+client = openai.OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
 
 @app.route("/")
 def home():
@@ -23,18 +24,18 @@ def chat():
     }
 
     try:
-        response = openai.ChatCompletion.create(
+        response = client.chat.completions.create(
             model="gpt-3.5-turbo",
             messages=[
                 {"role": "system", "content": system_prompts.get(role, "")},
                 {"role": "user", "content": message}
             ]
         )
-        reply = response.choices[0].message["content"]
+        reply = response.choices[0].message.content
         return jsonify({"reply": reply})
     except Exception as e:
-        print("OpenAI HATASI:", e)  # Render Logs içinde göreceksin
-        return jsonify({"reply": f"HATA: {str(e)}"})  # Ekranda göreceksin
+        print("OpenAI HATASI:", e)
+        return jsonify({"reply": f"HATA: {str(e)}"})
 
 if __name__ == "__main__":
     port = int(os.environ.get("PORT", 5000))
