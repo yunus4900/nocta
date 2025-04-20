@@ -1,13 +1,13 @@
 from flask import Flask, render_template, request, jsonify
-import openai
+from openai import OpenAI
 import os
 
 app = Flask(__name__)
 
-# OpenRouter entegrasyonu için endpoint ve key
-client = openai.OpenAI(
+# OpenRouter GPT entegrasyonu – dikkat: api_key olarak OPENAI_API_KEY alınır
+client = OpenAI(
     base_url="https://openrouter.ai/api/v1",
-    api_key=os.getenv("OPENROUTER_API_KEY")
+    api_key=os.getenv("OPENAI_API_KEY")
 )
 
 @app.route("/")
@@ -38,7 +38,7 @@ def chat():
         reply = response.choices[0].message.content
         return jsonify({"reply": reply})
     except Exception as e:
-        print("OpenRouter HATASI:", e)
+        print("HATA:", e)
         return jsonify({"reply": f"HATA: {str(e)}"})
 
 if __name__ == "__main__":
